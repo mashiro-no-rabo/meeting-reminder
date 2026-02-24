@@ -9,14 +9,24 @@ final class CalendarMonitor {
 
     func requestAccess(completion: @escaping (Bool) -> Void) {
         let status = EKEventStore.authorizationStatus(for: .event)
-        logger.info("Current calendar auth status: \(String(describing: status.rawValue))")
+        logger.info("Current calendar auth status: \(status.rawValue)")
 
-        store.requestFullAccessToEvents { granted, error in
-            if let error {
-                logger.error("Calendar access error: \(error.localizedDescription)")
+        switch status {
+        case .fullAccess, .authorized:
+            logger.info("Already have calendar access, skipping request")
+            completion(true)
+        case .notDetermined:
+            logger.info("Requesting calendar access")
+            store.requestFullAccessToEvents { granted, error in
+                if let error {
+                    logger.error("Calendar access error: \(error.localizedDescription)")
+                }
+                logger.info("Calendar access granted: \(granted)")
+                completion(granted)
             }
-            logger.info("Calendar access granted: \(granted)")
-            completion(granted)
+        default:
+            logger.warning("Calendar access denied or restricted (status: \(status.rawValue))")
+            completion(false)
         }
     }
 

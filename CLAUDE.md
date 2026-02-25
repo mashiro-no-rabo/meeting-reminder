@@ -10,7 +10,7 @@ Native macOS menu bar app that monitors calendar events via EventKit and shows a
 - `Sources/MeetingReminder/AppDelegate.swift` — Menu bar status item, 30s polling timer
 - `Sources/MeetingReminder/CalendarMonitor.swift` — EventKit queries, 90-150s reminder window, deduplication
 - `Sources/MeetingReminder/OverlayController.swift` — Borderless `.screenSaver`-level windows on all screens
-- `Sources/MeetingReminder/OverlayContentView.swift` — Dark overlay UI with meeting title, time, dismiss hints
+- `Sources/MeetingReminder/OverlayContentView.swift` — Dark overlay UI with NSStackView layout: meeting title, time, location, dismiss button, keyboard hint
 
 ## Build & Install
 
@@ -23,4 +23,5 @@ Use `/install` or manually: `swift build`, then copy binary into `~/Applications
 - **Bundle ID**: `com.claude.MeetingReminder`
 - **launchd plist**: `~/Library/LaunchAgents/com.claude.MeetingReminder.plist` — `RunAtLoad`, `KeepAlive`
 - **Logging**: Uses `os.Logger` with subsystem `com.claude.MeetingReminder`, view with: `log show --predicate 'subsystem == "com.claude.MeetingReminder"' --info --last 5m`
-- **Dismiss overlay**: Click, ESC, Enter, or wait 30s auto-dismiss
+- **Dismiss overlay**: Click the Dismiss button (single click), or press ESC/Enter twice, or wait 30s auto-dismiss. Uses `NSEvent.addLocalMonitorForEvents` for key handling and `NSApp.activate(ignoringOtherApps:)` to ensure the overlay receives focus.
+- **Calendar permission**: Checks `EKEventStore.authorizationStatus` first and skips `requestFullAccessToEvents` if already `.fullAccess`/`.authorized`. Note: ad-hoc re-signing resets the permission grant (status returns to `.notDetermined`).

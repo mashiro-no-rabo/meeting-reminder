@@ -4,6 +4,8 @@ final class OverlayController {
     private var windows: [NSWindow] = []
     private var dismissTimer: Timer?
 
+    var isShowing: Bool { !windows.isEmpty }
+
     func showOverlay(title: String, startDate: Date, location: String?) {
         dismissAll()
 

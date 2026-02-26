@@ -7,6 +7,17 @@ final class CalendarMonitor {
     private let store = EKEventStore()
     private var shownEventIDs: [String: Date] = [:]
 
+    private struct ReminderWindow {
+        let minSeconds: TimeInterval
+        let maxSeconds: TimeInterval
+        let tag: String
+    }
+
+    private let reminderWindows = [
+        ReminderWindow(minSeconds: 90, maxSeconds: 150, tag: "2min"),
+        ReminderWindow(minSeconds: 0, maxSeconds: 30, tag: "30sec"),
+    ]
+
     func requestAccess(completion: @escaping (Bool) -> Void) {
         let status = EKEventStore.authorizationStatus(for: .event)
         logger.info("Current calendar auth status: \(status.rawValue)")
@@ -44,17 +55,24 @@ final class CalendarMonitor {
 
         let events = store.events(matching: predicate)
 
-        let reminderWindow = events.filter { event in
-            let secondsUntilStart = event.startDate.timeIntervalSince(now)
-            return secondsUntilStart >= 90 && secondsUntilStart <= 150
+        var result: [EKEvent] = []
+
+        for window in reminderWindows {
+            let matched = events.filter { event in
+                let secondsUntilStart = event.startDate.timeIntervalSince(now)
+                return secondsUntilStart >= window.minSeconds && secondsUntilStart <= window.maxSeconds
+            }
+
+            for event in matched {
+                guard let id = event.eventIdentifier else { continue }
+                let dedupeKey = "\(id)_\(window.tag)"
+                if shownEventIDs[dedupeKey] != nil { continue }
+                shownEventIDs[dedupeKey] = now
+                result.append(event)
+            }
         }
 
-        return reminderWindow.filter { event in
-            guard let id = event.eventIdentifier else { return false }
-            if shownEventIDs[id] != nil { return false }
-            shownEventIDs[id] = now
-            return true
-        }
+        return result
     }
 
     func nextUpcomingEvent() -> EKEvent? {

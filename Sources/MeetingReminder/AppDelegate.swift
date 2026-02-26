@@ -42,6 +42,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func checkForUpcomingMeetings() {
         let events = calendarMonitor.eventsToRemind()
+        guard !overlayController.isShowing else { return }
         for event in events {
             overlayController.showOverlay(title: event.title, startDate: event.startDate, location: event.location)
         }

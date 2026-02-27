@@ -14,7 +14,6 @@ final class CalendarMonitor {
     }
 
     private let reminderWindows = [
-        ReminderWindow(minSeconds: 90, maxSeconds: 150, tag: "2min"),
         ReminderWindow(minSeconds: 0, maxSeconds: 30, tag: "30sec"),
     ]
 

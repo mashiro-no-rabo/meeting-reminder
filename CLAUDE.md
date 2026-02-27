@@ -8,7 +8,7 @@ Native macOS menu bar app that monitors calendar events via EventKit and shows a
 - `Sources/Resources/Info.plist` — `LSUIElement=true`, calendar usage description
 - `Sources/MeetingReminder/main.swift` — App entry point, `.accessory` activation policy
 - `Sources/MeetingReminder/AppDelegate.swift` — Menu bar status item, 30s polling timer
-- `Sources/MeetingReminder/CalendarMonitor.swift` — EventKit queries, two reminder windows (90-150s and 0-30s before start), per-window deduplication
+- `Sources/MeetingReminder/CalendarMonitor.swift` — EventKit queries, single reminder window (0-30s before start), per-event deduplication
 - `Sources/MeetingReminder/OverlayController.swift` — Borderless `.screenSaver`-level windows on all screens
 - `Sources/MeetingReminder/OverlayContentView.swift` — Dark overlay UI with NSStackView layout: meeting title, time, location, dismiss button, keyboard hint
 

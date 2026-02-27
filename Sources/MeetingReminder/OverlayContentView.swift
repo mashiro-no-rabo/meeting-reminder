@@ -17,8 +17,15 @@ final class OverlayContentView: NSView {
         let titleLabel = makeLabel(title, font: .boldSystemFont(ofSize: 64), color: .white)
 
         // Time
+        let secondsUntil = Int(startDate.timeIntervalSinceNow)
+        let timeText: String
+        if secondsUntil > 0 {
+            timeText = "Starts at \(timeFormatter.string(from: startDate)) (in \(secondsUntil)s)"
+        } else {
+            timeText = "Starts at \(timeFormatter.string(from: startDate))"
+        }
         let timeLabel = makeLabel(
-            "Starts at \(timeFormatter.string(from: startDate))",
+            timeText,
             font: .systemFont(ofSize: 32),
             color: .white
         )

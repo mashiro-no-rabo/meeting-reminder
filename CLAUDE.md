@@ -7,14 +7,14 @@ Native macOS menu bar app that monitors calendar events via EventKit and shows a
 - `Package.swift` — SPM executable target, macOS 14+, embeds Info.plist via `-sectcreate` linker flags
 - `Sources/Resources/Info.plist` — `LSUIElement=true`, calendar usage description
 - `Sources/MeetingReminder/main.swift` — App entry point, `.accessory` activation policy
-- `Sources/MeetingReminder/AppDelegate.swift` — Menu bar status item, 30s polling timer
+- `Sources/MeetingReminder/AppDelegate.swift` — Menu bar status item, 10s polling timer
 - `Sources/MeetingReminder/CalendarMonitor.swift` — EventKit queries, single reminder window (0-30s before start), per-event deduplication
 - `Sources/MeetingReminder/OverlayController.swift` — Borderless `.screenSaver`-level windows on all screens
 - `Sources/MeetingReminder/OverlayContentView.swift` — Dark overlay UI with NSStackView layout: meeting title, time, location, dismiss button, keyboard hint
 
 ## Build & Install
 
-Use `/install` or manually: `swift build`, then copy binary into `~/Applications/MeetingReminder.app/Contents/MacOS/`, codesign with calendar entitlement, load launchd plist.
+Use `/install` or manually: `swift build`, then copy binary into `~/Applications/MeetingReminder.app/Contents/MacOS/`, codesign with calendar entitlement, load launchd plist. **Always reinstall after making code changes** so the running app picks them up.
 
 ## Key Details
 

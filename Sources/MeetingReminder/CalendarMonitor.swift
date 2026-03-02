@@ -76,8 +76,8 @@ final class CalendarMonitor {
 
     func nextUpcomingEvent() -> EKEvent? {
         let now = Date()
-        let oneDayFromNow = now.addingTimeInterval(24 * 60 * 60)
-        let predicate = store.predicateForEvents(withStart: now, end: oneDayFromNow, calendars: nil)
+        guard let endOfDay = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: now) else { return nil }
+        let predicate = store.predicateForEvents(withStart: now, end: endOfDay, calendars: nil)
         let events = store.events(matching: predicate)
         return events.first { $0.startDate >= now }
     }

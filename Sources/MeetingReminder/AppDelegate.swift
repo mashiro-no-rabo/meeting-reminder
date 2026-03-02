@@ -27,15 +27,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Show Overlay", action: #selector(showOverlayNow), keyEquivalent: ""))
+        let showItem = NSMenuItem(title: "Show Next Meeting", action: #selector(showOverlayNow), keyEquivalent: "")
+        showItem.tag = 1
+        menu.addItem(showItem)
         menu.addItem(.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))
+        menu.delegate = self
         statusItem.menu = menu
     }
 
     private func startPolling() {
         checkForUpcomingMeetings()
-        pollTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
+        pollTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { [weak self] _ in
             self?.checkForUpcomingMeetings()
         }
     }
@@ -57,5 +60,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func quit() {
         NSApp.terminate(nil)
+    }
+}
+
+extension AppDelegate: NSMenuDelegate {
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        guard let showItem = menu.item(withTag: 1) else { return }
+        let hasNext = calendarMonitor.nextUpcomingEvent() != nil
+        showItem.isEnabled = hasNext
+        showItem.title = hasNext ? "Show Next Meeting" : "No More Meetings Today"
     }
 }

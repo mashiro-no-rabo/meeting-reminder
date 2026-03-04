@@ -3,6 +3,7 @@ import AppKit
 final class OverlayController {
     private var windows: [NSWindow] = []
     private var dismissTimer: Timer?
+    private let mediaController = MediaController()
 
     var isShowing: Bool { !windows.isEmpty }
 
@@ -48,9 +49,12 @@ final class OverlayController {
         dismissTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false) { [weak self] _ in
             self?.dismissAll()
         }
+
+        mediaController.pauseIfPlaying()
     }
 
     func dismissAll() {
+        mediaController.resumeIfNeeded()
         dismissTimer?.invalidate()
         dismissTimer = nil
         for window in windows {

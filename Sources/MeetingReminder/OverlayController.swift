@@ -6,7 +6,7 @@ final class OverlayController {
 
     var isShowing: Bool { !windows.isEmpty }
 
-    func showOverlay(title: String, startDate: Date, location: String?) {
+    func showOverlay(title: String, startDate: Date, location: String?, url: URL? = nil, notes: String? = nil) {
         dismissAll()
 
         for screen in NSScreen.screens {
@@ -26,6 +26,8 @@ final class OverlayController {
                 title: title,
                 startDate: startDate,
                 location: location,
+                url: url,
+                notes: notes,
                 onDismiss: { [weak self] in
                     self?.dismissAll()
                 }

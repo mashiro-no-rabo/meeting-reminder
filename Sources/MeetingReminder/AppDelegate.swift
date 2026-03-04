@@ -47,7 +47,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let events = calendarMonitor.eventsToRemind()
         guard !overlayController.isShowing else { return }
         for event in events {
-            overlayController.showOverlay(title: event.title, startDate: event.startDate, location: event.location)
+            overlayController.showOverlay(title: event.title, startDate: event.startDate, location: event.location, url: event.url, notes: event.notes)
         }
     }
 
@@ -55,7 +55,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let next = calendarMonitor.nextUpcomingEvent()
         let title = next?.title ?? "No upcoming meetings"
         let startDate = next?.startDate ?? Date()
-        overlayController.showOverlay(title: title, startDate: startDate, location: next?.location)
+        overlayController.showOverlay(title: title, startDate: startDate, location: next?.location, url: next?.url, notes: next?.notes)
     }
 
     @objc private func quit() {
